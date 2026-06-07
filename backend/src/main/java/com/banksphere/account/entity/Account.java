@@ -1,0 +1,41 @@
+package com.banksphere.account.entity;
+
+import com.banksphere.account.enums.AccountStatus;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Entity
+@Table(name = "accounts")
+@Getter
+@Setter
+@NoArgsConstructor
+public class Account {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(nullable = false)
+    private UUID customerId;
+
+    @Column(nullable = false, unique = true)
+    private String accountNumber;
+
+    @Column(nullable = false, precision = 19, scale = 2)
+    private BigDecimal availableBalance = BigDecimal.ZERO;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AccountStatus status = AccountStatus.ACTIVE;
+
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+}
