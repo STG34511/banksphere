@@ -1,8 +1,8 @@
 import { Outlet } from "react-router-dom";
-import Sidebar from "./Sidebar";
+import OfficerSidebar from "./OfficerSidebar";
 import TopNavbar from "./TopNavbar";
 
-const DashboardLayout = () => {
+const OfficerLayout = () => {
   return (
     <div
       className="
@@ -12,11 +12,7 @@ const DashboardLayout = () => {
         overflow-hidden
       "
     >
-      {/* Sidebar */}
-
-      <Sidebar />
-
-      {/* Main Content */}
+      <OfficerSidebar />
 
       <div
         className="
@@ -26,11 +22,7 @@ const DashboardLayout = () => {
           overflow-hidden
         "
       >
-        {/* Header */}
-
         <TopNavbar />
-
-        {/* Page Content */}
 
         <main
           className="
@@ -47,4 +39,4 @@ const DashboardLayout = () => {
   );
 };
 
-export default DashboardLayout;
+export default OfficerLayout;

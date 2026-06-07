@@ -3,7 +3,7 @@ import LoginForm from "../components/LoginForm";
 
 const LoginPage = () => {
   return (
-    <div className="min-h-screen grid md:grid-cols-[58%_42%]">
+    <div className="min-h-screen grid md:grid-cols-[52%_48%]">
       <AuthBranding />
 
       <div

@@ -7,14 +7,19 @@ import RootLayout from "../layout/RootLayout";
 import AuthLayout from "../layout/AuthLayout";
 import DashboardLayout from "../layout/DashboardLayout";
 import LoginPage from "../../features/auth/pages/LoginPage";
+import RegisterPage from "../../features/auth/pages/RegisterPage";
+import DashboardPage from "../../features/dashboard/pages/DashboardPage";
+import OfficerLoginPage from "../../features/officer/pages/OfficerLoginPage";
+import ApplicationReviewPage from "../../features/officer/pages/ApplicationReviewPage";
+import TransactionReviewsPage from "../../features/officer/pages/TransactionReviewsPage";
+import ApplicationsPage from "../../features/officer/pages/ApplicationsPage";
+import ReportsPage from "../../features/officer/pages/ReportsPage";
+import OfficerDashboardPage from "../../features/officer/pages/OfficerDashboardPage";
+import OfficerLayout from "../layout/OfficerLayout";
 /* ==========================================================================
    AUTH PAGES
 ========================================================================== */
 
-
-const SignupPage = () => {
-  return <div>Signup Page</div>;
-};
 
 const ChangePasswordPage = () => {
   return <div>Change Password Page</div>;
@@ -24,9 +29,6 @@ const ChangePasswordPage = () => {
    CUSTOMER PAGES
 ========================================================================== */
 
-const DashboardPage = () => {
-  return <div>Customer Dashboard</div>;
-};
 
 const AccountsPage = () => {
   return <div>Accounts Page</div>;
@@ -44,17 +46,7 @@ const BeneficiariesPage = () => {
    ADMIN PAGES
 ========================================================================== */
 
-const AdminDashboardPage = () => {
-  return <div>Admin Dashboard</div>;
-};
 
-const OnboardingRequestsPage = () => {
-  return <div>Onboarding Requests</div>;
-};
-
-const CustomersPage = () => {
-  return <div>Customers Page</div>;
-};
 
 
 export const router = createBrowserRouter([
@@ -79,12 +71,16 @@ export const router = createBrowserRouter([
 
           {
             path: "signup",
-            element: <SignupPage />,
+            element: <RegisterPage />,
           },
 
           {
             path: "change-password",
             element: <ChangePasswordPage />,
+          },
+          {
+            path: "officer/login",
+            element: <OfficerLoginPage />,
           },
         ],
       },
@@ -117,23 +113,32 @@ export const router = createBrowserRouter([
       },
 
       {
-        path: "admin",
-        element: <DashboardLayout />,
+        path: "officer",
+        element: <OfficerLayout />,
 
         children: [
           {
             index: true,
-            element: <AdminDashboardPage />,
+            element: <OfficerDashboardPage />,
           },
 
           {
-            path: "onboarding-requests",
-            element: <OnboardingRequestsPage />,
+            path: "applications",
+            element: <ApplicationsPage />,
           },
 
           {
-            path: "customers",
-            element: <CustomersPage />,
+            path: "applications/:id",
+            element: <ApplicationReviewPage />,
+          },
+          {
+            path: "transaction-reviews",
+            element: <TransactionReviewsPage />,
+          },
+
+          {
+            path: "reports",
+            element: <ReportsPage />,
           },
         ],
       },

@@ -1,7 +1,14 @@
 const AuthBranding = () => {
   return (
     <div
-      className="min-h-screen hidden md:flex flex-col justify-between p-8 bg-primary relative overflow-hidden"
+      className="hidden
+    md:flex
+    h-screen
+    flex-col
+    justify-between
+    p-12
+    bg-primary
+    overflow-hidden"
     >
 
       <div className="">
@@ -40,7 +47,7 @@ const AuthBranding = () => {
 
         {/* Hero */}
 
-        <div className="mt-16 max-w-[560px]">
+        <div className="mt-16 max-w-140">
           <h1
             className="
               text-4xl
