@@ -1,5 +1,6 @@
 package com.banksphere.onboarding.entity;
 
+import com.banksphere.onboarding.dto.request.CreateApplicationRequest;
 import com.banksphere.onboarding.enums.ApplicationStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -69,4 +70,5 @@ public class OnboardingApplication{
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime submittedAt;
+
 }
