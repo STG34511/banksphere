@@ -22,4 +22,6 @@ public interface OnboardingApplicationRepository extends JpaRepository<Onboardin
     boolean existsByAadhaarNumberAndStatus(@NotBlank @Pattern(regexp = "^[0-9]{12}$") String s, ApplicationStatus applicationStatus);
 
     boolean existsByPanNumberAndStatus(@NotBlank @Pattern(regexp = "^[A-Z]{5}[0-9]{4}[A-Z]{1}$") String s, ApplicationStatus applicationStatus);
+
+    Page<OnboardingApplication> findAllByStatus(ApplicationStatus applicationStatus, Pageable pageable);
 }

@@ -1,6 +1,7 @@
 package com.banksphere.account.entity;
 
 import com.banksphere.account.enums.AccountStatus;
+import com.banksphere.customer.entity.Customer;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,8 +23,9 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
-    private UUID customerId;
+    @ManyToOne
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
 
     @Column(nullable = false, unique = true)
     private String accountNumber;

@@ -1,6 +1,7 @@
 package com.banksphere.auth.entity;
 
 import com.banksphere.auth.enums.Role;
+import com.banksphere.customer.entity.Customer;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
