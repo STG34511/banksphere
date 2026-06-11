@@ -17,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173")
 public class OfficerApplicationController {
 
     private final OfficerApplicationService applicationService;
@@ -39,6 +40,7 @@ public class OfficerApplicationController {
         return new ResponseEntity<>(new ApiResponse<>(true,"Application rejected successfully",response), HttpStatus.OK);
     }
 
+    @PostMapping("/api/officer/applications/{reference}/approve")
     public ResponseEntity<ApiResponse<ApprovalResponse>> approveApplication(@PathVariable String reference) {
         ApprovalResponse response = applicationService.approveApplication(reference);
         return new ResponseEntity<>(new ApiResponse<>(true,"Application approved successfully",response), HttpStatus.OK);
