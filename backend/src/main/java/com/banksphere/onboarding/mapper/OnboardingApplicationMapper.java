@@ -1,6 +1,7 @@
 package com.banksphere.onboarding.mapper;
 
 import com.banksphere.onboarding.dto.request.CreateApplicationRequest;
+import com.banksphere.onboarding.dto.response.Address;
 import com.banksphere.onboarding.dto.response.ApplicationDetailsResponse;
 import com.banksphere.onboarding.dto.response.ApplicationResponse;
 import com.banksphere.onboarding.dto.response.ApplicationSummary;
@@ -67,6 +68,6 @@ public class OnboardingApplicationMapper {
     }
 
     public ApplicationDetailsResponse toApplicationDetails(OnboardingApplication application) {
-        return new ApplicationDetailsResponse(application.getApplicationReference(),application.getFirstName(),application.getLastName(),application.getEmail(),application.getMobileNumber(),application.getPanNumber(),application.getAadhaarNumber(),application.getStatus(),application.getSubmittedAt());
+        return new ApplicationDetailsResponse(application.getApplicationReference(),application.getFirstName(),application.getLastName(),application.getEmail(),application.getMobileNumber(),application.getPanNumber(),application.getAadhaarNumber(),application.getStatus(),application.getSubmittedAt(),application.getDateOfBirth(),new Address(application.getAddressLine1(), application.getAddressLine2(), application.getCity(), application.getState(), application.getPostalCode()));
     }
 }

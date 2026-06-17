@@ -1,12 +1,85 @@
+import { useNavigate, useParams } from "react-router-dom";
+import { useApplicationDtls } from "../hooks/useApplicationDtls";
+import { formatDate } from "../../../app/utils/dateutils";
+import { useState } from "react";
+import { useRejectApplication } from "../hooks/useRejectApplication";
+import { useApproveApplication } from "../hooks/useApproveApplication";
+import { toast } from "sonner";
+
 const ApplicationReviewPage = () => {
+  const { reference } = useParams();
+
+  const { data, isPending, isError } = useApplicationDtls(reference!);
+  const application = data?.data;
+
+  const [reason, setReason] = useState("");
+
+  const approveMutation = useApproveApplication();
+
+  const rejectMutation = useRejectApplication();
+
+  const navigate = useNavigate();
+
+  const handleApprove = () => {
+    approveMutation.mutate(reference!, {
+      onSuccess: () => {
+        toast.success("Application approved successfully");
+
+        navigate("/officer/applications");
+      },
+
+      onError: () => {
+        toast.error("Failed to approve application");
+      },
+    });
+  };
+
+  const handleReject = () => {
+    if (!reason.trim()) {
+      toast.error("Rejection reason is required");
+      return;
+    }
+
+    rejectMutation.mutate(
+      {
+        reference: reference!,
+        reason,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Application rejected successfully");
+
+          navigate("/officer/applications");
+        },
+
+        onError: () => {
+          toast.error("Failed to reject application");
+        },
+      },
+    );
+  };
+
+  if (isPending) {
+    return (
+      <div className="p-6 text-center">
+        <p>Loading application details...</p>
+      </div>
+    );
+  }
+  if (isError) {
+    return (
+      <div className="p-6 text-center text-error">
+        <p>Error loading application details.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       {/* Header */}
 
       <div>
-        <p className="text-sm text-text-secondary">
-          Application Review
-        </p>
+        <p className="text-sm text-text-secondary">Application Review</p>
 
         <h1
           className="
@@ -15,7 +88,7 @@ const ApplicationReviewPage = () => {
             font-bold
           "
         >
-          APP000001
+          {application?.applicationReference || "Application Reference"}
         </h1>
 
         <p
@@ -24,9 +97,8 @@ const ApplicationReviewPage = () => {
             text-text-secondary
           "
         >
-          Review customer onboarding details and
-          decide whether to approve or reject the
-          application.
+          Review customer onboarding details and decide whether to approve or
+          reject the application.
         </p>
       </div>
 
@@ -42,9 +114,7 @@ const ApplicationReviewPage = () => {
         "
       >
         <div>
-          <p className="text-sm text-text-secondary">
-            Current Status
-          </p>
+          <p className="text-sm text-text-secondary">Current Status</p>
 
           <p
             className="
@@ -53,17 +123,15 @@ const ApplicationReviewPage = () => {
               text-warning
             "
           >
-            PENDING
+            {application?.status || "Application Status"}
           </p>
         </div>
 
         <div>
-          <p className="text-sm text-text-secondary">
-            Submitted On
-          </p>
+          <p className="text-sm text-text-secondary">Submitted On</p>
 
           <p className="font-medium">
-            07 Jun 2026
+            {application ? formatDate(application.submittedAt) : "Submitted On"}
           </p>
         </div>
       </div>
@@ -90,22 +158,26 @@ const ApplicationReviewPage = () => {
         >
           <InfoField
             label="First Name"
-            value="Rahul"
+            value={application?.firstName || "First Name"}
           />
 
           <InfoField
             label="Last Name"
-            value="Sharma"
+            value={application?.lastName || "Last Name"}
           />
 
           <InfoField
             label="Date Of Birth"
-            value="14 Jan 1998"
+            value={
+              application
+                ? formatDate(application.dateOfBirth)
+                : "Date Of Birth"
+            }
           />
 
           <InfoField
             label="Phone Number"
-            value="+91 9876543210"
+            value={application?.mobileNumber || "Phone Number"}
           />
         </div>
       </div>
@@ -126,12 +198,16 @@ const ApplicationReviewPage = () => {
         <div className="space-y-6">
           <InfoField
             label="Email Address"
-            value="rahul@email.com"
+            value={application?.email || "Email Address"}
           />
 
           <InfoField
             label="Residential Address"
-            value="Mumbai, Maharashtra, India"
+            value={
+              application?.address
+                ? `${application.address.line1}, ${application.address.line2}, ${application.address.city}, ${application.address.state} - ${application.address.postalCode}`
+                : "Residential Address"
+            }
           />
         </div>
       </div>
@@ -158,12 +234,12 @@ const ApplicationReviewPage = () => {
         >
           <InfoField
             label="PAN Number"
-            value="ABCDE1234F"
+            value={application?.panNumber || "PAN Number"}
           />
 
           <InfoField
             label="Aadhaar Number"
-            value="XXXX XXXX 1234"
+            value={application?.aadharNumber || "Aadhaar Number"}
           />
         </div>
       </div>
@@ -183,6 +259,7 @@ const ApplicationReviewPage = () => {
 
         <textarea
           rows={4}
+          onChange={(e) => setReason(e.target.value)}
           placeholder="Enter remarks if rejecting application..."
           className="
             px-4
@@ -202,6 +279,8 @@ const ApplicationReviewPage = () => {
         "
       >
         <button
+          onClick={() => handleReject()}
+          disabled={rejectMutation.isPending}
           className="
             px-6
             py-3
@@ -213,10 +292,12 @@ const ApplicationReviewPage = () => {
             hover:bg-red-50
           "
         >
-          Reject
+          {rejectMutation.isPending ? "Rejecting..." : "Reject Application"}
         </button>
 
         <button
+          onClick={() => handleApprove()}
+          disabled={approveMutation.isPending}
           className="
             px-6
             py-3
@@ -226,7 +307,7 @@ const ApplicationReviewPage = () => {
             font-semibold
           "
         >
-          Approve Application
+          {approveMutation.isPending ? "Approving..." : "Approve Application"}
         </button>
       </div>
     </div>
@@ -235,19 +316,12 @@ const ApplicationReviewPage = () => {
 
 export default ApplicationReviewPage;
 
-/* -------------------------------------------------------------------------- */
-/* Helper Component */
-/* -------------------------------------------------------------------------- */
-
 interface InfoFieldProps {
   label: string;
   value: string;
 }
 
-const InfoField = ({
-  label,
-  value,
-}: InfoFieldProps) => {
+const InfoField = ({ label, value }: InfoFieldProps) => {
   return (
     <div>
       <p

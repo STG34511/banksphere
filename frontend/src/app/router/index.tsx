@@ -128,7 +128,7 @@ export const router = createBrowserRouter([
           },
 
           {
-            path: "applications/:id",
+            path: "applications/:reference",
             element: <ApplicationReviewPage />,
           },
           {

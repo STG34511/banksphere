@@ -5,9 +5,7 @@ const OfficerDashboardPage = () => {
   return (
     <div className="space-y-8">
       <div>
-        <p className="text-sm text-text-secondary">
-          Operations Portal
-        </p>
+        <p className="text-sm text-text-secondary">Operations Portal</p>
 
         <h1
           className="
@@ -25,16 +23,14 @@ const OfficerDashboardPage = () => {
             text-text-secondary
           "
         >
-          Review customer onboarding requests,
-          compliance reviews and daily activity.
+          Review customer onboarding requests, compliance reviews and daily
+          activity.
         </p>
       </div>
-
       <OfficerStats />
-
-      <PendingApplicationsTable />
+      <PendingApplicationsTable  />
     </div>
   );
 };
 
-export default OfficerDashboardPage
+export default OfficerDashboardPage;

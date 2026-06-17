@@ -1,30 +1,23 @@
 import { Link } from "react-router-dom";
-
-const applications = [
-  {
-    id: "APP000001",
-    customerName: "Rahul Sharma",
-    email: "rahul@email.com",
-    date: "07 Jun 2026",
-    status: "PENDING",
-  },
-  {
-    id: "APP000002",
-    customerName: "Priya Singh",
-    email: "priya@email.com",
-    date: "07 Jun 2026",
-    status: "PENDING",
-  },
-  {
-    id: "APP000003",
-    customerName: "Amit Verma",
-    email: "amit@email.com",
-    date: "06 Jun 2026",
-    status: "PENDING",
-  },
-];
+import { formatDate } from "../../../app/utils/dateutils";
+import { useApplications } from "../hooks/useApplications";
 
 const PendingApplicationsTable = () => {
+  const { data, isPending, isError } = useApplications(0);
+  const applications = data?.data.content || [];
+
+  if (isPending) {
+    return <div className="p-6 text-center">Loading applications...</div>;
+  }
+
+  if (isError) {
+    return (
+      <div className="p-6 text-center text-error">
+        Error loading applications.
+      </div>
+    );
+  }
+
   return (
     <div
       className="
@@ -58,77 +51,75 @@ const PendingApplicationsTable = () => {
               text-left
             "
           >
-            <th className="px-6 py-4">
-              Reference
-            </th>
+            <th className="px-6 py-4">Reference</th>
 
-            <th className="px-6 py-4">
-              Customer
-            </th>
+            <th className="px-6 py-4">Customer</th>
 
-            <th className="px-6 py-4">
-              Email
-            </th>
+            <th className="px-6 py-4">Email</th>
 
-            <th className="px-6 py-4">
-              Applied On
-            </th>
+            <th className="px-6 py-4">Applied On</th>
 
-            <th className="px-6 py-4">
-              Status
-            </th>
+            <th className="px-6 py-4">Status</th>
 
-            <th className="px-6 py-4">
-              Action
-            </th>
+            <th className="px-6 py-4">Action</th>
           </tr>
         </thead>
 
         <tbody>
-          {applications.map((application) => (
-            <tr
-              key={application.id}
-              className="
+          {applications.length === 0 ? (
+            <tr>
+              <td
+                colSpan={6}
+                className="
+          px-6
+          py-12
+          text-center
+          text-text-secondary
+        "
+              >
+                No pending applications to review.
+              </td>
+            </tr>
+          ) : (
+            applications.map((application) => (
+              <tr
+                key={application.applicationReference}
+                className="
                 border-t
                 border-border-light
               "
-            >
-              <td className="px-6 py-4 font-medium">
-                {application.id}
-              </td>
+              >
+                <td className="px-6 py-4 font-medium">
+                  {application.applicationReference}
+                </td>
 
-              <td className="px-6 py-4">
-                {application.customerName}
-              </td>
+                <td className="px-6 py-4">{application.fullName}</td>
 
-              <td className="px-6 py-4">
-                {application.email}
-              </td>
+                <td className="px-6 py-4">{application.email}</td>
 
-              <td className="px-6 py-4">
-                {application.date}
-              </td>
+                <td className="px-6 py-4">
+                  {formatDate(application.submittedAt)}
+                </td>
 
-              <td className="px-6 py-4">
-                <span className="text-warning">
-                  {application.status}
-                </span>
-              </td>
+                <td className="px-6 py-4">
+                  <span className="text-warning">{application.status}</span>
+                </td>
 
-              <td className="px-6 py-4">
-                <Link
-                  to={`/officer/applications/${application.id}`}
-                  className="
+                <td className="px-6 py-4">
+                  <Link
+                    to={`/officer/applications/${application.applicationReference}`}
+                    className="
                     text-accent
                     font-medium
                     hover:underline
                   "
-                >
-                  Review
-                </Link>
-              </td>
-            </tr>
-          ))}
+                  >
+                    Review
+                  </Link>
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
     </div>
