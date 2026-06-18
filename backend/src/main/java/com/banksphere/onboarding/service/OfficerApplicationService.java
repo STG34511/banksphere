@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 
 
 public interface OfficerApplicationService {
-    Page<ApplicationSummary> findPendingApplications(ApplicationStatus status, Pageable pageable) ;
+    Page<ApplicationSummary> findPendingApplications(ApplicationStatus status, Pageable pageable);
 
     ApplicationDetailsResponse getApplicationDetails(String reference);
 

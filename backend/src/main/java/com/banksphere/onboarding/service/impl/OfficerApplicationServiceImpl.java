@@ -23,6 +23,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -33,12 +34,13 @@ import java.util.UUID;
 @Service
 public class OfficerApplicationServiceImpl implements OfficerApplicationService {
 
-   private final OnboardingApplicationRepository onboardingApplicationRepository;
-   private final OnboardingApplicationMapper mapper;
-   private final ReferenceGenerationService referenceGenerationService;
-   private final UserRepository userRepository;
-   private final CustomerRepository customerRepository;
-   private final AccountRepository accountRepository;
+    private final OnboardingApplicationRepository onboardingApplicationRepository;
+    private final OnboardingApplicationMapper mapper;
+    private final ReferenceGenerationService referenceGenerationService;
+    private final UserRepository userRepository;
+    private final CustomerRepository customerRepository;
+    private final AccountRepository accountRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Page<ApplicationSummary> findPendingApplications(ApplicationStatus status, Pageable pageable) {
@@ -82,21 +84,21 @@ public class OfficerApplicationServiceImpl implements OfficerApplicationService 
 
         String customerNumber = referenceGenerationService.generateCustomerNumber();
 
-        User user = createNewUser(customerNumber);
+        User user = createNewUser(customerNumber, application.getFirstName(), application.getAadhaarNumber());
 
-        Customer customer = createNewCustomer(application, user,customerNumber);
+        Customer customer = createNewCustomer(application, user, customerNumber);
 
         Account account = createNewAccount(customer);
 
         markApplicationAsApproved(application);
 
-        return new ApprovalResponse(application.getApplicationReference(),customer.getCustomerNumber(),account.getAccountNumber());
+        return new ApprovalResponse(application.getApplicationReference(), customer.getCustomerNumber(), account.getAccountNumber());
     }
 
     private void markApplicationAsApproved(OnboardingApplication application) {
         application.setStatus(ApplicationStatus.APPROVED);
         application.setReviewedAt(LocalDateTime.now());
-        application.setReviewedByOfficerId( UUID.fromString(
+        application.setReviewedByOfficerId(UUID.fromString(
                 "11111111-1111-1111-1111-111111111111"
         ));
         onboardingApplicationRepository.save(application);
@@ -105,7 +107,7 @@ public class OfficerApplicationServiceImpl implements OfficerApplicationService 
     private Account createNewAccount(Customer customer) {
         Account account = new Account();
         account.setAccountNumber(referenceGenerationService.generateAccountNumber());
-        account.setCustomer( customer );
+        account.setCustomer(customer);
         account.setStatus(AccountStatus.ACTIVE);
         account.setAvailableBalance(new BigDecimal(0));
         account = accountRepository.save(account);
@@ -114,7 +116,7 @@ public class OfficerApplicationServiceImpl implements OfficerApplicationService 
         return account;
     }
 
-    private Customer createNewCustomer(OnboardingApplication application, User user,String customerNumber) {
+    private Customer createNewCustomer(OnboardingApplication application, User user, String customerNumber) {
         Customer customer = new Customer();
         customer.setCustomerNumber(customerNumber);
         customer.setUser(user);
@@ -133,12 +135,18 @@ public class OfficerApplicationServiceImpl implements OfficerApplicationService 
         return customerRepository.save(customer);
     }
 
-    private User createNewUser(String customerNumber) {
+    private User createNewUser(String customerNumber, String firstName, String aadhaarNumber) {
         User user = new User();
         user.setUsername(customerNumber);
         user.setRole(Role.CUSTOMER);
         user.setActive(true);
-        user.setPasswordHash("welcome@123");
+        user.setPasswordHash(generateFirstTimePassword(firstName, aadhaarNumber));
+        user.setPasswordChangeRequired(true);
         return userRepository.save(user);
+    }
+
+    private String generateFirstTimePassword(String firstName, String aadhaarNumber) {
+        String raw = (firstName.length() > 4 ? firstName.substring(0, 4).toLowerCase() : firstName.toLowerCase()) + aadhaarNumber.substring(aadhaarNumber.length() - 4);
+        return passwordEncoder.encode(raw);
     }
 }
