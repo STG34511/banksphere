@@ -1,6 +1,47 @@
-import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import type LoginRequest from "../types/LoginRequest";
+import { useLogin } from "../hooks/useLogin";
+import { toast } from "sonner";
+import { useAuthStore } from "../../../app/store/authStore";
 
 const LoginForm = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginRequest>();
+
+  const { mutate: login, isPending } = useLogin();
+  const loginUser = useAuthStore((state) => state.login);
+  const navigate = useNavigate();
+
+  const onSubmit = (data: LoginRequest) => {
+    login(data, {
+      onSuccess: (response) => {
+        if (response.data.role !== "CUSTOMER") {
+          toast.error("Please use the officer login page.");
+          return;
+        }
+        loginUser(
+          response.data.accessToken,
+          response.data.username,
+          response.data.role,
+        );
+        navigate("/dashboard", { replace: true });
+        toast.success("Login successful");
+      },
+      onError: (error) => {
+        const message =
+          error instanceof Error
+            ? error.message
+            : "Please check your credentials and try again.";
+
+        toast.error(`Login failed. ${message}`);
+      },
+    });
+  };
+
   return (
     <div
       className="
@@ -12,9 +53,7 @@ const LoginForm = () => {
       "
     >
       <div>
-        <p className="text-sm text-text-secondary font-medium">
-          Welcome back
-        </p>
+        <p className="text-sm text-text-secondary font-medium">Welcome back</p>
 
         <h1
           className="
@@ -39,7 +78,7 @@ const LoginForm = () => {
         </p>
       </div>
 
-      <form className="mt-10 space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="mt-10 space-y-6">
         <div>
           <label
             className="
@@ -52,8 +91,23 @@ const LoginForm = () => {
           >
             Customer ID / Email
           </label>
-
+          {errors.username && (
+            <div className="text-red-500 text-sm mb-2">
+              {errors.username.message}
+            </div>
+          )}
           <input
+            {...register("username", {
+              required: "Username is required",
+              maxLength: {
+                value: 100,
+                message: "Maximum 100 characters allowed",
+              },
+              minLength: {
+                value: 3,
+                message: "Minimum 3 characters required",
+              },
+            })}
             type="text"
             placeholder="Enter customer ID or email"
             className="h-12 px-4"
@@ -84,8 +138,20 @@ const LoginForm = () => {
               Forgot password?
             </button>
           </div>
+          {errors.password && (
+            <div className="text-red-500 text-sm mb-2">
+              {errors.password.message}
+            </div>
+          )}
 
           <input
+            {...register("password", {
+              required: "Password is required",
+              minLength: {
+                value: 3,
+                message: "Password must be at least 3 characters long",
+              },
+            })}
             type="password"
             placeholder="Enter password"
             className="h-12 px-4"
@@ -103,11 +169,7 @@ const LoginForm = () => {
               cursor-pointer
             "
           >
-            <input
-              type="checkbox"
-              className="h-4 w-4"
-            />
-
+            <input type="checkbox" className="h-4 w-4" />
             Remember me
           </label>
         </div>
@@ -124,8 +186,9 @@ const LoginForm = () => {
             hover:bg-primary-light
             transition-all
           "
+          disabled={isPending}
         >
-          Sign In Securely
+          {isPending ? "Signing In..." : "Sign In Securely"}
         </button>
       </form>
 
@@ -143,6 +206,17 @@ const LoginForm = () => {
             Request New Account
           </Link>
         </p>
+        <div className="mt-6 text-center">
+          <p className="text-sm text-text-secondary">
+            Are you an officer?{" "}
+            <Link
+              to="/officer/login"
+              className="text-accent font-semibold hover:underline"
+            >
+              Officer Login
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const OfficerLoginForm = () => {
   return (
     <div
@@ -9,9 +11,7 @@ const OfficerLoginForm = () => {
       "
     >
       <div>
-        <p className="text-sm text-text-secondary">
-          Internal Access
-        </p>
+        <p className="text-sm text-text-secondary">Internal Access</p>
 
         <h1
           className="
@@ -29,8 +29,8 @@ const OfficerLoginForm = () => {
             text-text-secondary
           "
         >
-          Sign in to review customer applications
-          and manage operational workflows.
+          Sign in to review customer applications and manage operational
+          workflows.
         </p>
       </div>
 
@@ -87,6 +87,19 @@ const OfficerLoginForm = () => {
           Sign In
         </button>
       </form>
+      <div className="mt-8 pt-6 border-t border-border-light text-center">
+        <div className="mt-6 text-center">
+          <p className="text-sm text-text-secondary">
+            Are you a customer?{" "}
+            <Link
+              to="/login"
+              className="text-accent font-semibold  hover:underline "
+            >
+              Customer Login
+            </Link>
+          </p>
+        </div>
+      </div>
     </div>
   );
 };

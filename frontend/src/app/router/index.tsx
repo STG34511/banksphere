@@ -1,7 +1,4 @@
-import {
-  createBrowserRouter,
-  Navigate,
-} from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 
 import RootLayout from "../layout/RootLayout";
 import AuthLayout from "../layout/AuthLayout";
@@ -16,10 +13,10 @@ import ApplicationsPage from "../../features/officer/pages/ApplicationsPage";
 import ReportsPage from "../../features/officer/pages/ReportsPage";
 import OfficerDashboardPage from "../../features/officer/pages/OfficerDashboardPage";
 import OfficerLayout from "../layout/OfficerLayout";
+import { CustomerRoute, OfficerRoute, ProtectedRoute } from "./protectedRoutes";
 /* ==========================================================================
    AUTH PAGES
 ========================================================================== */
-
 
 const ChangePasswordPage = () => {
   return <div>Change Password Page</div>;
@@ -28,7 +25,6 @@ const ChangePasswordPage = () => {
 /* ==========================================================================
    CUSTOMER PAGES
 ========================================================================== */
-
 
 const AccountsPage = () => {
   return <div>Accounts Page</div>;
@@ -45,9 +41,6 @@ const BeneficiariesPage = () => {
 /* ==========================================================================
    ADMIN PAGES
 ========================================================================== */
-
-
-
 
 export const router = createBrowserRouter([
   {
@@ -86,59 +79,73 @@ export const router = createBrowserRouter([
       },
 
       {
-        path: "dashboard",
-        element: <DashboardLayout />,
-
+        element: <ProtectedRoute />,
         children: [
           {
-            index: true,
-            element: <DashboardPage />,
-          },
+            element: <CustomerRoute />,
+            children: [
+              {
+                path: "dashboard",
+                element: <DashboardLayout />,
 
-          {
-            path: "accounts",
-            element: <AccountsPage />,
-          },
+                children: [
+                  {
+                    index: true,
+                    element: <DashboardPage />,
+                  },
 
-          {
-            path: "transactions",
-            element: <TransactionsPage />,
-          },
+                  {
+                    path: "accounts",
+                    element: <AccountsPage />,
+                  },
 
-          {
-            path: "beneficiaries",
-            element: <BeneficiariesPage />,
-          },
-        ],
-      },
+                  {
+                    path: "transactions",
+                    element: <TransactionsPage />,
+                  },
 
-      {
-        path: "officer",
-        element: <OfficerLayout />,
-
-        children: [
-          {
-            index: true,
-            element: <OfficerDashboardPage />,
-          },
-
-          {
-            path: "applications",
-            element: <ApplicationsPage />,
-          },
-
-          {
-            path: "applications/:reference",
-            element: <ApplicationReviewPage />,
+                  {
+                    path: "beneficiaries",
+                    element: <BeneficiariesPage />,
+                  },
+                ],
+              },
+            ],
           },
           {
-            path: "transaction-reviews",
-            element: <TransactionReviewsPage />,
-          },
+            element: <OfficerRoute />,
+            children: [
+              {
+                path: "officer",
+                element: <OfficerLayout />,
 
-          {
-            path: "reports",
-            element: <ReportsPage />,
+                children: [
+                  {
+                    index: true,
+                    element: <OfficerDashboardPage />,
+                  },
+
+                  {
+                    path: "applications",
+                    element: <ApplicationsPage />,
+                  },
+
+                  {
+                    path: "applications/:reference",
+                    element: <ApplicationReviewPage />,
+                  },
+                  {
+                    path: "transaction-reviews",
+                    element: <TransactionReviewsPage />,
+                  },
+
+                  {
+                    path: "reports",
+                    element: <ReportsPage />,
+                  },
+                ],
+              },
+            ],
           },
         ],
       },
