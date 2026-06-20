@@ -1,6 +1,7 @@
 package com.banksphere.account.entity;
 
 import com.banksphere.account.enums.AccountStatus;
+import com.banksphere.account.enums.AccountType;
 import com.banksphere.customer.entity.Customer;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -23,8 +24,8 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
     private Customer customer;
 
     @Column(nullable = false, unique = true)
@@ -32,6 +33,13 @@ public class Account {
 
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal availableBalance = BigDecimal.ZERO;
+
+    @Column(nullable = false)
+    private Boolean primaryAccount;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private AccountType accountType;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
