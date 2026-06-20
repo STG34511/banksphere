@@ -9,6 +9,8 @@ import com.banksphere.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -36,5 +38,13 @@ public class AuthServiceImpl implements AuthService {
                 user.getUsername(),
                 user.getRole().name()
         );
+    }
+
+    @Override
+    public LoginResponse getCurrentUser(Authentication authentication) {
+        String userName = (String) authentication.getPrincipal();
+        User user = userRepository.findByUsername(userName).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+        String role = user.getRole().name();
+        return new LoginResponse("", userName, role);
     }
 }

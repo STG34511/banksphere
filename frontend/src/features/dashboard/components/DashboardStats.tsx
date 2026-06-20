@@ -16,19 +16,19 @@ const DashboardStats = () => {
       />
 
       <StatCard
-        title="Transactions"
+        title="Transactions This Month"
         value="18"
       />
 
       <StatCard
-        title="Beneficiaries"
-        value="5"
+        title="Total Debit this Month"
+        value="₹ 24,583"
+      />
+      <StatCard
+        title="Total Credit this Month"
+        value="₹ 1,00,000"
       />
 
-      <StatCard
-        title="Pending Reviews"
-        value="2"
-      />
     </div>
   );
 };

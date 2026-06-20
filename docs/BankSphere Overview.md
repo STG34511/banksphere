@@ -1,214 +1,137 @@
-# BankSphere
+# BankSphere - Delivery Roadmap
 
-## Overview
+# Iteration 1 - Foundation
 
-BankSphere is a digital banking platform that allows customers to onboard, manage accounts, transfer
-funds, manage beneficiaries, and track transactions.
+Status: ✅ Complete
 
-The project focuses on realistic banking transaction processing, regulatory checks, ledger-based
-accounting, auditability, and operational workflows rather than basic CRUD functionality.
+Features:
 
-The application will be implemented as a modular monolith using Spring Boot and React.
+* Customer onboarding
+* Authentication
+* Officer approval workflow
+* User creation
+* Customer creation
+* Account creation
+* Dashboard skeleton
+* Route protection
+* Flyway migrations
 
-# Actors
+---
 
-## Customer
+# Iteration 2 - Core Banking
 
-Can:
+Goal:
 
-```
-Register
-Login
-View account details
-View balance
-View transaction history
-Manage beneficiaries
-Initiate transfers
-View transaction status
-Raise transaction enquiries
-```
-## Officer
+Enable customers to manage accounts, beneficiaries and perform internal fund transfers.
 
-Can:
+## Phase 1
 
-```
-Review customer onboarding applications
-Approve applications
-Reject applications with remarks
-Review flagged transactions
-Approve or reject flagged transactions
-Freeze accounts
-Close accounts
-```
-## Admin
+* Dashboard APIs
+* Account APIs
+* Recent Transactions APIs
 
-Can:
+## Phase 2
 
-```
-Manage officers
-View audit logs
-```
-### • • • • • • • • • • • • • • • • • •
+* Beneficiaries
+* Add Beneficiary
+* Update Beneficiary
+* Delete Beneficiary
+* Maximum 5 beneficiaries
 
+## Phase 3
 
-```
-View system reports
-Configure transaction limits
-```
-# Account Lifecycle
+* Ledger Foundation
+* System Accounts
+* Idempotency
+* Transfer history
 
-### PENDING_APPROVAL
+## Phase 4
 
-### APPROVED
+* Internal Transfers
+* Balance Validation
+* Concurrency Handling
+* Ledger Entries
 
-### ACTIVE
+Status: In Progress
 
-### FROZEN
+---
 
-### CLOSED
+# Iteration 3 - External Transfers
 
-# Beneficiaries
+Goal:
 
-Maximum 5 active beneficiaries.
+Support external bank transfers.
 
-Beneficiaries act as saved receivers and contain:
+Features:
 
-```
-Nickname
-Account Number
-IFSC
-```
-Beneficiaries do not require approval.
+* IMPS
+* NEFT
+* RTGS
+* Transaction status tracking
+* Scheduled processing
+* Refund processing
 
-# Transfer Types
+Status: Planned
 
-## Internal Transfer
+---
 
-Sender and receiver belong to BankSphere.
+# Iteration 4 - Regulatory Engine
 
-Flow:
+Features:
 
-Debit Sender
+* Daily transaction limits
+* OFAC screening
+* Transaction review queue
+* Officer approval workflow
 
-Credit Receiver
+Status: Planned
 
-Ledger Entries Created
+---
 
-Transaction Completed
+# Iteration 5 - Customer Experience
 
-### •
+Features:
 
-### •
+* Transaction enquiry
+* Notifications
+* Account freeze
+* Account closure
 
-### •
+Status: Planned
 
-### •
-
-### •
-
-
-## External Transfer
-
-Sender belongs to BankSphere.
-
-Receiver belongs to another bank.
-
-Supported rails:
-
-### IMPS
-
-### NEFT
-
-### RTGS
-
-External transfers are simulated.
-
-# Regulatory Checks
-
-Every transaction passes through:
-
-```
-Balance Check
-Daily Transfer Limit Check
-Account Status Check
-OFAC Screening
-```
-OFAC matches result in:
-
-### PENDING_REVIEW
-
-Officer approval required.
-
-# Transaction States
-
-### INITIATED
-
-### PROCESSING
-
-### PENDING_REVIEW
-
-### SUCCESS
-
-### FAILED
-
-### REFUND_PENDING
-
-### REFUNDED
-
-### • • • • • • •
-
-
-# Ledger
-
-Ledger is the source of truth.
-
-Every transaction creates immutable ledger entries.
-
-Account balance is maintained as a balance snapshot for performance.
-
-# Notifications
-
-Email notifications for:
-
-```
-Account Approval
-Transfer Success
-Transfer Failure
-Refund Completion
-```
-# Audit Trail
-
-Audit entries for:
-
-```
-Login
-Registration
-Beneficiary Changes
-Transfer Initiation
-Transfer Approval
-Refund Processing
-Account Freeze
-Account Closure
-```
-# Transaction Enquiry
-
-Customer can search transactions using reference number and view:
-
-```
-Current Status
-Failure Reason
-Refund Status
-Review Status
-```
-### • • • • • • • • • • • • • • • •
-
-
-# Refund Processing
-
-Failed transactions may enter REFUND_PENDING state.
-
-Scheduler processes pending refunds.
-
-Refund completion creates ledger entries and notifications.
-
-
+---
+
+# Iteration 6 - Production Readiness
+
+Features:
+
+* Audit trail
+* Reports
+* Docker support
+* Deployment
+* API documentation
+* Architecture documentation
+* Portfolio README
+* Screenshots
+
+Status: Planned
+
+---
+
+# Final Deliverable
+
+BankSphere demonstrates:
+
+* Spring Boot 4
+* Spring Security
+* PostgreSQL
+* Flyway
+* React
+* TypeScript
+* Docker
+* Authentication & Authorization
+* Ledger-based accounting
+* Transaction processing
+* Regulatory workflows
+* Background job processing
+* Enterprise application architecture
