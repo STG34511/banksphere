@@ -1,28 +1,14 @@
-const transactions = [
-  {
-    id: 1,
-    beneficiary: "Amit Sharma",
-    amount: "₹ 5,000",
-    status: "SUCCESS",
-    date: "07 Jun 2026",
-  },
-  {
-    id: 2,
-    beneficiary: "Rahul Verma",
-    amount: "₹ 2,500",
-    status: "SUCCESS",
-    date: "06 Jun 2026",
-  },
-  {
-    id: 3,
-    beneficiary: "Priya Singh",
-    amount: "₹ 10,000",
-    status: "PROCESSING",
-    date: "05 Jun 2026",
-  },
-];
+import type { PageResponse } from "../../../types/PageResponse";
+import type { TransactionSummaryResponse } from "../types/TransactionSummaryResponse";
 
-const RecentTransactionsTable = () => {
+const RecentTransactionsTable = ({
+  transactionPage,
+  isTransactionsLoading,
+}: {
+  transactionPage: PageResponse<TransactionSummaryResponse> | undefined;
+  isTransactionsLoading: boolean;
+}) => {
+  const transactions = transactionPage?.content || [];
   return (
     <div
       className="
@@ -38,64 +24,72 @@ const RecentTransactionsTable = () => {
           border-border-light
         "
       >
-        <h2 className="font-bold text-lg">
-          Recent Transactions
-        </h2>
+        <h2 className="font-bold text-lg">Recent Transactions</h2>
       </div>
-
       <table className="w-full">
         <thead>
           <tr
             className="
-              bg-surface-secondary
-              text-left
+              bg-surface-secondary text-left border-t border-border-light
             "
           >
-            <th className="px-6 py-4">
-              Beneficiary
-            </th>
+            <th className="px-6 py-4 text-center">Type</th>
 
-            <th className="px-6 py-4">
-              Amount
-            </th>
+            <th className="px-6 py-4 text-center">Amount</th>
 
-            <th className="px-6 py-4">
-              Status
-            </th>
+            <th className="px-6 py-4 text-center">Status</th>
 
-            <th className="px-6 py-4">
-              Date
-            </th>
+            <th className="px-6 py-4 text-center">Date</th>
           </tr>
         </thead>
 
-        <tbody>
-          {transactions.map((transaction) => (
-            <tr
-              key={transaction.id}
-              className="
+        {isTransactionsLoading && (
+          <tbody>
+            <tr>
+              <td colSpan={4} className="p-6 text-center">
+                <p>Loading...</p>
+              </td>
+            </tr>
+          </tbody>
+        )}
+
+        {transactions.length === 0 && !isTransactionsLoading && (
+          <tbody>
+            <tr>
+              <td colSpan={4} className="p-6 text-center">
+                <p>No transactions found.</p>
+              </td>
+            </tr>
+          </tbody>
+        )}
+
+        {transactions && (
+          <tbody>
+            {transactions.map((transaction) => (
+              <tr
+                key={transaction.transferId}
+                className="
                 border-t
                 border-border-light
               "
-            >
-              <td className="px-6 py-4">
-                {transaction.beneficiary}
-              </td>
+              >
+                <td className="px-6 py-4 text-center">
+                  {transaction.transferType}
+                </td>
 
-              <td className="px-6 py-4 font-medium">
-                {transaction.amount}
-              </td>
+                <td className="px-6 py-4 font-medium text-center">
+                  {transaction.amount}
+                </td>
 
-              <td className="px-6 py-4">
-                {transaction.status}
-              </td>
+                <td className="px-6 py-4 text-center ">{transaction.status}</td>
 
-              <td className="px-6 py-4 text-text-secondary">
-                {transaction.date}
-              </td>
-            </tr>
-          ))}
-        </tbody>
+                <td className="px-6 py-4 text-text-secondary text-center">
+                  {transaction.transactionDate.toLocaleDateString()}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        )}
       </table>
     </div>
   );

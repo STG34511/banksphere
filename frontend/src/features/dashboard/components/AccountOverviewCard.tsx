@@ -1,9 +1,26 @@
-const AccountOverviewCard = () => {
+import type DashboardResponse from "../types/DashboardResponse";
+import CircularProgress from "@mui/material/CircularProgress";
+
+const AccountOverviewCard = ({
+  dashboard,
+  dashboardLoading,
+}: {
+  dashboard: DashboardResponse | undefined;
+  dashboardLoading: boolean;
+}) => {
+  const primaryAccount = dashboard?.accounts?.find(
+    (account) => account.primary,
+  );
+  if (dashboardLoading) {
+    return (
+      <div className="surface-card p-8 flex justify-center items-center min-h-50">
+        <CircularProgress size={32} />
+      </div>
+    );
+  }
   return (
     <div className="surface-card p-8">
-      <p className="text-sm text-text-secondary">
-        Primary Account
-      </p>
+      <p className="text-sm text-text-secondary">Primary Account</p>
 
       <h2
         className="
@@ -12,7 +29,7 @@ const AccountOverviewCard = () => {
           font-bold
         "
       >
-        BS000001
+        {primaryAccount?.accountNumber || "N/A"}
       </h2>
 
       <div
@@ -23,23 +40,17 @@ const AccountOverviewCard = () => {
         "
       >
         <div>
-          <p className="text-sm text-text-secondary">
-            Status
-          </p>
+          <p className="text-sm text-text-secondary">Status</p>
 
           <p className="font-semibold credit-text">
-            ACTIVE
+            {primaryAccount?.status || "N/A"}
           </p>
         </div>
 
         <div>
-          <p className="text-sm text-text-secondary">
-            Customer ID
-          </p>
+          <p className="text-sm text-text-secondary">Customer ID</p>
 
-          <p className="font-semibold">
-            CUS000001
-          </p>
+          <p className="font-semibold">{dashboard?.customerId || "N/A"}</p>
         </div>
       </div>
     </div>

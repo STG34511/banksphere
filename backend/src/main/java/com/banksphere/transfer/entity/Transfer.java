@@ -6,6 +6,8 @@ import com.banksphere.transfer.entity.enums.TransferStatus;
 import com.banksphere.transfer.entity.enums.TransferType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -86,6 +88,12 @@ public class Transfer {
     private String failureReason;
 
     private LocalDateTime scheduledExecutionTime;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     private LocalDateTime completedAt;
 

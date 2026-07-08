@@ -64,9 +64,13 @@ public class Customer {
     private String postalCode;
 
     @OneToMany(mappedBy = "customer")
-    private List<Account> accounts =  new ArrayList<>();
+    private List<Account> accounts = new ArrayList<>();
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
 }

@@ -3,12 +3,15 @@ package com.banksphere.customer.mapper;
 import com.banksphere.account.entity.Account;
 import com.banksphere.customer.dto.response.AccountSummaryResponse;
 import com.banksphere.customer.dto.response.DashboardResponse;
+import com.banksphere.customer.dto.response.TransactionSummaryResponse;
 import com.banksphere.customer.entity.Customer;
+import com.banksphere.customer.enums.TransactionDirection;
 import com.banksphere.transfer.entity.Transfer;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class DashboardMapper {
@@ -20,4 +23,41 @@ public class DashboardMapper {
         BigDecimal totalCreditThisMonth = creditTransfers.stream().map(Transfer::getAmount).reduce(new BigDecimal(0), BigDecimal::add);
         return new DashboardResponse(customer.getCustomerNumber(), String.join(customer.getFirstName(), customer.getLastName(), " "), totalBalance, accountSummaries, transactionsThisMonth, totalDebitThisMonth, totalCreditThisMonth);
     }
+
+
+    public TransactionSummaryResponse mapToTransactionSummary(Transfer transfer, UUID accountId) {
+
+        boolean debit =
+                transfer.getSourceAccount()
+                        .getId()
+                        .equals(accountId);
+
+        String counterparty;
+
+        if (debit) {
+            counterparty =
+                    transfer.getBeneficiaryName();
+        } else {
+            counterparty =
+                    transfer.getSourceAccount()
+                            .getCustomer()
+                            .getFullName();
+        }
+
+        return new TransactionSummaryResponse(
+                transfer.getId(),
+                transfer.getReferenceNumber(),
+                transfer.getTransferType(),
+                debit
+                        ? TransactionDirection.DEBIT
+                        : TransactionDirection.CREDIT,
+                counterparty,
+                transfer.getAmount(),
+                transfer.getStatus(),
+                transfer.getCreatedAt()
+        );
+    }
+
+
 }
+

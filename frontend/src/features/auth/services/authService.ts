@@ -24,6 +24,6 @@ export async function login(credentials: {
 export async function getCurrentUser(): Promise<
   ApiResponse<LoginResponse>
 > {
-  const response = await apiClient.get("/auth/me");
+  const response = await apiClient.get("/user/me");
   return response.data;
 }
