@@ -29,3 +29,15 @@ server:
 jwt:
   secret: ba6edb55c202fe07f04e8eadf09c95f3e9ea0e637be2fa018d499074434cd899
   expiration: 1800000
+
+
+banksphere:
+  system:
+    accounts:
+      funding: SYS000000
+      parking: SYS000002
+      settlement: SYS000003
+      fee: SYS000004
+
+  bank:
+    ifsc: BKSP0000001

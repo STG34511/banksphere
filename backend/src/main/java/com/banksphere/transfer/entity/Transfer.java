@@ -1,7 +1,7 @@
 package com.banksphere.transfer.entity;
 
 import com.banksphere.account.entity.Account;
-import com.banksphere.ledger.entity.Journal;
+import com.banksphere.transfer.entity.enums.TransferMode;
 import com.banksphere.transfer.entity.enums.TransferStatus;
 import com.banksphere.transfer.entity.enums.TransferType;
 import jakarta.persistence.*;
@@ -11,8 +11,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -77,6 +75,10 @@ public class Transfer {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    private TransferMode transferMode;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private TransferStatus status;
 
     private String beneficiaryName;
@@ -100,10 +102,11 @@ public class Transfer {
     @Column(unique = true)
     private String idempotencyKey;
 
-    @OneToMany(
-            mappedBy = "transfer",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private List<Journal> journals = new ArrayList<>();
+    private String networkReferenceNumber;
+
+    @Column(length = 250)
+    private String remarks;
+    
+    private Integer retryCount;
+
 }

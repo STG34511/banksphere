@@ -1,12 +1,10 @@
-package com.banksphere.ledger.entity;
+package com.banksphere.accounting.journal.entity;
 
-import com.banksphere.ledger.enums.JournalType;
+import com.banksphere.accounting.journal.enums.JournalType;
 import com.banksphere.transfer.entity.Transfer;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -48,12 +46,4 @@ public class Journal {
     private JournalType journalType;
 
     private String description;
-
-    @OneToMany(
-            mappedBy = "journal",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private List<LedgerEntry> ledgerEntries =
-            new ArrayList<>();
 }

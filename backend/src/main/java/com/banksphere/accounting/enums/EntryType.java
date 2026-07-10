@@ -1,4 +1,4 @@
-package com.banksphere.ledger.enums;
+package com.banksphere.accounting.enums;
 
 public enum EntryType {
     DEBIT,

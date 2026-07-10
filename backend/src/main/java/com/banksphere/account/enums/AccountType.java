@@ -5,5 +5,6 @@ public enum AccountType {
     CURRENT,
     PARKING,
     SETTLEMENT,
-    FEE
+    FEE,
+    SYSTEM
 }

@@ -20,6 +20,9 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Account {
 
+    @Version
+    private long version;
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -48,4 +51,7 @@ public class Account {
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @Column(nullable = false, length = 11)
+    private String ifsc;
 }

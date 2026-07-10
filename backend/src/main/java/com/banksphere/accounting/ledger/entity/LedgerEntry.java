@@ -1,11 +1,14 @@
-package com.banksphere.ledger.entity;
+package com.banksphere.accounting.ledger.entity;
 
 import com.banksphere.account.entity.Account;
-import com.banksphere.ledger.enums.EntryType;
+import com.banksphere.accounting.enums.EntryType;
+import com.banksphere.accounting.journal.entity.Journal;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -63,4 +66,7 @@ public class LedgerEntry {
     private BigDecimal amount;
 
     private String narration;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 }

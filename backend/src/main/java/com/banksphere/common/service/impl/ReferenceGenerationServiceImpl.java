@@ -1,5 +1,6 @@
 package com.banksphere.common.service.impl;
 
+import com.banksphere.common.enums.Sequence;
 import com.banksphere.common.repository.SequenceRepository;
 import com.banksphere.common.service.ReferenceGenerationService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ public class ReferenceGenerationServiceImpl
     public String generateApplicationReference() {
         return String.format(
                 "APP%06d",
-                sequenceRepository.nextApplicationReference()
+                sequenceRepository.nextValue(Sequence.APPLICATION_REFERENCE)
         );
     }
 
@@ -25,7 +26,7 @@ public class ReferenceGenerationServiceImpl
 
         return String.format(
                 "CUS%06d",
-                sequenceRepository.nextCustomerNumber()
+                sequenceRepository.nextValue(Sequence.CUSTOMER_NUMBER)
         );
     }
 
@@ -34,8 +35,25 @@ public class ReferenceGenerationServiceImpl
 
         return String.format(
                 "BS1%07d",
-                sequenceRepository.nextAccountNumber()
+                sequenceRepository.nextValue(Sequence.ACCOUNT_NUMBER)
         );
     }
+
+    @Override
+    public String generateTransferReference() {
+        return String.format(
+                "TXN1%07d",
+                sequenceRepository.nextValue(Sequence.TRANSFER_REFERENCE)
+        );
+    }
+
+    @Override
+    public String generateJournalReference() {
+        return String.format(
+                "JN1%07d",
+                sequenceRepository.nextValue(Sequence.JOURNAL_NUMBER)
+        );
+    }
+
 
 }
