@@ -7,7 +7,7 @@ const navigationItems = [
     icon: "🏠",
   },
   {
-    label: "Transfers",
+    label: "Transfer Money",
     path: "/transfers",
     icon: "💸",
   },
@@ -17,7 +17,7 @@ const navigationItems = [
     icon: "👥",
   },
   {
-    label: "Transactions",
+    label: "Transactions history",
     path: "/transactions",
     icon: "📄",
   },

@@ -14,6 +14,7 @@ import ReportsPage from "../../features/officer/pages/ReportsPage";
 import OfficerDashboardPage from "../../features/officer/pages/OfficerDashboardPage";
 import OfficerLayout from "../layout/OfficerLayout";
 import { CustomerRoute, OfficerRoute, ProtectedRoute } from "./protectedRoutes";
+import TransferPage from "../../features/transfers/pages/TransferPage";
 /* ==========================================================================
    AUTH PAGES
 ========================================================================== */
@@ -85,18 +86,23 @@ export const router = createBrowserRouter([
             element: <CustomerRoute />,
             children: [
               {
-                path: "dashboard",
                 element: <DashboardLayout />,
 
                 children: [
                   {
                     index: true,
+                    path: "dashboard",
                     element: <DashboardPage />,
                   },
 
                   {
                     path: "accounts",
                     element: <AccountsPage />,
+                  },
+
+                  {
+                    path: "transfers",
+                    element: <TransferPage />,
                   },
 
                   {

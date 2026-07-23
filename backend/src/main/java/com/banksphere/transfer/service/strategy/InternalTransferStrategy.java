@@ -49,8 +49,9 @@ public class InternalTransferStrategy implements PaymentRailStrategy {
     }
 
     private TransferResponse processInternalTransfer(TransferRequest request) {
-        Account sourceAccount = accountRepository.findById(request.sourceAccountId()).orElseThrow(() -> new IllegalArgumentException("Source account not found"));
-        Account destinationAccount = accountRepository.findById(request.destinationAccountId()).orElseThrow(() -> new IllegalArgumentException("Destination account not found"));
+        Account sourceAccount = accountRepository.findByAccountNumber(request.sourceAccountNumber()).orElseThrow(() -> new IllegalArgumentException("Source account not found"));
+        // Validate whether source account belongs to signed-in user
+        Account destinationAccount = accountRepository.findByAccountNumber(request.beneficiaryDetails().beneficiaryAccountNumber()).orElseThrow(() -> new IllegalArgumentException("Destination account not found"));
 
         transferValidationService.validateInternalTransfer(sourceAccount, destinationAccount, request);
 
