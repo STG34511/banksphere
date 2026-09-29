@@ -11,4 +11,19 @@ public class TransferValidationServiceImpl implements TransferValidationService 
     public void validateInternalTransfer(Account sourceAccount, Account destinationAccount, TransferRequest request) {
 
     }
+
+    @Override
+    public void validateNEFTTransfer(Account sourceAccount, TransferRequest request) {
+
+    }
+
+    @Override
+    public void validateIMPSTransfer(Account sourceAccount, TransferRequest request) {
+
+    }
+
+    @Override
+    public void validateRTGSTransfer(Account sourceAccount, TransferRequest request) {
+
+    }
 }

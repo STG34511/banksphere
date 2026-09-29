@@ -11,11 +11,8 @@ public enum TransferStatus {
     // Waiting for manual intervention (OFAC, officer approval)
     PENDING_REVIEW,
 
-    // Waiting for NEFT batch submission
-    PARKED,
-
-    // Sent to external payment network (NPCI/RBI)
-    SENT_TO_NETWORK,
+    // Picked by processor for second leg/
+    PICKED,
 
     // Network has not responded yet
     WAITING_NETWORK_CONFIRMATION,

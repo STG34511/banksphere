@@ -15,6 +15,7 @@ import com.banksphere.transfer.repository.TransferRepository;
 import com.banksphere.transfer.service.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -23,47 +24,48 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class InternalTransferStrategy implements PaymentRailStrategy {
+public class RTGSTransferStrategy implements PaymentRailStrategy {
 
-    private final TransferValidationService transferValidationService;
-    private final AccountingService accountingService;
-    private final TransferRepository transferRepository;
-
-    private final TransferFactory transferFactory;
-    private final TransferMapper transferMapper;
-    private final TransferLifecycleService transferLifecycleService;
-    private final AccountService accountService;
     private final TransferExecutionService transferExecutionService;
+    private final AccountService accountService;
+    private final TransferRepository transferRepository;
+    private final TransferValidationService transferValidationService;
+    private final TransferFactory transferFactory;
+    private final AccountingService accountingService;
+    private final TransferLifecycleService transferLifecycleService;
+    private final TransferMapper transferMapper;
+
+    @Value("${banksphere.system.accounts.parking}")
+    private String parkingAccountNumber;
 
     @Override
     public TransferMode getSupportedMode() {
-        return TransferMode.INTERNAL;
+        return TransferMode.RTGS;
     }
 
     @Override
     @Transactional
     public TransferResponse process(TransferRequest request) {
-        return transferExecutionService.executeWithRetry(() -> processInternalTransfer(request));
+        return transferExecutionService.executeWithRetry(() -> processRTGSTransfer(request));
     }
 
-    private TransferResponse processInternalTransfer(TransferRequest request) {
+    private TransferResponse processRTGSTransfer(TransferRequest request) {
         Account sourceAccount = accountService.findAccountByAccountNumber(request.sourceAccountNumber());
-        // Validate whether source account belongs to signed-in user
-        Account destinationAccount = accountService.findAccountByAccountNumber(request.beneficiaryDetails().beneficiaryAccountNumber());
+        Account parkingAccount = accountService.findAccountByAccountNumber(parkingAccountNumber);
 
-        transferValidationService.validateInternalTransfer(sourceAccount, destinationAccount, request);
+        transferValidationService.validateRTGSTransfer(sourceAccount, request);
 
-        Transfer transfer = transferFactory.createCustomerTransfer(sourceAccount, destinationAccount, request);
+        Transfer transfer = transferFactory.createCustomerTransfer(sourceAccount, parkingAccount, request);
 
         transferRepository.save(transfer);
 
-        AccountingInstruction instruction = buildAccountingInstruction(sourceAccount, destinationAccount, transfer);
+        AccountingInstruction instruction = buildAccountingInstruction(sourceAccount, parkingAccount, transfer);
 
         accountingService.post(instruction);
 
-        transferLifecycleService.markSuccess(transfer);
+        transferLifecycleService.markProcessing(transfer);
 
-        return transferMapper.toResponse(transfer);
+        return transferMapper.toInitiatedResponse(transfer);
     }
 
 
@@ -96,11 +98,9 @@ public class InternalTransferStrategy implements PaymentRailStrategy {
 
     private AccountingInstruction buildAccountingInstruction(Account sourceAccount, Account destinationAccount, Transfer transfer) {
         List<PostingInstruction> instructions = new ArrayList<>();
-        instructions.add(debit(sourceAccount, transfer.getAmount(), "Transfer to " + destinationAccount.getAccountNumber()));
+        instructions.add(debit(sourceAccount, transfer.getAmount(), "RTGS Parking for " + transfer.getReferenceNumber()));
         instructions.add(credit(destinationAccount, transfer.getAmount(), "Transfer from " + sourceAccount.getAccountNumber()));
 
-        return new AccountingInstruction(transfer, JournalType.TRANSFER, "Internal Transfer", instructions);
+        return new AccountingInstruction(transfer, JournalType.TRANSFER, "RTGS Transfer - PARKING", instructions);
     }
-
-
 }
